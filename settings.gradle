@@ -1,1 +1,1 @@
-include ':Andfixdemo'
+include ':Andfixdemo', 'TinkerCmdDemo'
