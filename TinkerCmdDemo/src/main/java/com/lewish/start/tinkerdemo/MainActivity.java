@@ -51,6 +51,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private String getPatchName() {
-        return mPatchDir.concat("imooc").concat(FILE_END);
+        return mPatchDir.concat("tinkerPatch").concat(FILE_END);
     }
 }
