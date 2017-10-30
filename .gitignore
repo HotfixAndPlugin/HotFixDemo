@@ -7,3 +7,6 @@
 /build
 /captures
 .externalNativeBuild
+/Tools/Tinker/outputs
+/Tools/Tinker/apk
+/Tools/Tinker/keystore

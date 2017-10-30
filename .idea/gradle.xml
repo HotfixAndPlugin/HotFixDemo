@@ -10,6 +10,7 @@
             <option value="$PROJECT_DIR$" />
             <option value="$PROJECT_DIR$/Andfixdemo" />
             <option value="$PROJECT_DIR$/TinkerCmdDemo" />
+            <option value="$PROJECT_DIR$/TinkerGradleDemo" />
           </set>
         </option>
         <option name="resolveModulePerSourceSet" value="false" />

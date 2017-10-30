@@ -5,6 +5,7 @@
       <module fileurl="file://$PROJECT_DIR$/Andfixdemo/Andfixdemo.iml" filepath="$PROJECT_DIR$/Andfixdemo/Andfixdemo.iml" />
       <module fileurl="file://$PROJECT_DIR$/HotFixDemo.iml" filepath="$PROJECT_DIR$/HotFixDemo.iml" />
       <module fileurl="file://$PROJECT_DIR$/TinkerCmdDemo/TinkerCmdDemo.iml" filepath="$PROJECT_DIR$/TinkerCmdDemo/TinkerCmdDemo.iml" />
+      <module fileurl="file://$PROJECT_DIR$/TinkerGradleDemo/TinkerGradleDemo.iml" filepath="$PROJECT_DIR$/TinkerGradleDemo/TinkerGradleDemo.iml" />
     </modules>
   </component>
 </project>

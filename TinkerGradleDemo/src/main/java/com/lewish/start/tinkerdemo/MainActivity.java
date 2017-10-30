@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.lewish.start.tinkerdemo.tinker.TinkerManager;
@@ -19,7 +20,7 @@ public class MainActivity extends AppCompatActivity {
     private String mPatchDir;
     private Button mBtnBugFixTest;
     private Button mBtnLoadApatch;
-
+    private TextView mTv;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -48,9 +49,11 @@ public class MainActivity extends AppCompatActivity {
                 TinkerManager.loadPatch(getPatchName());
             }
         });
+        mTv = (TextView)findViewById(R.id.mTv);
+        mTv.setText("再改下试试");
     }
 
     private String getPatchName() {
-        return mPatchDir.concat("imooc").concat(FILE_END);
+        return mPatchDir.concat("tinkerPatch").concat(FILE_END);
     }
 }
