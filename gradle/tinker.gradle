@@ -42,23 +42,32 @@ if (buildWithTinker()) {
     //所有tinker相关的参数配置
     tinkerPatch {
 
+        tinkerEnable = buildWithTinker() //指定是否启用tinker
+
         oldApk = getOldApkPath() //指定old apk文件径
 
         ignoreWarning = false   //不忽略tinker的警告，有则中止patch文件的生成
 
         useSign = true  //强制patch文件也使用签名
 
-        tinkerEnable = buildWithTinker(); //指定是否启用tinker
-
         buildConfig {
 
             applyMapping = getApplyMappingPath()  //指定old apk打包时所使用的混淆文件
 
             applyResourceMapping = getApplyResourceMappingPath()  //指定old apk的资源文件
-
-            tinkerId = getTinkerIdValue() //指定TinkerID
-
+            /**
+             * 指定TinkerID
+             * 在运行过程中，我们需要验证基准apk包的tinkerId是否等于补丁包的tinkerId。这个是决定补丁包能运行在哪些基准包上面，一般来说我们可以使用git版本号、versionName等等。
+             */
+            tinkerId = getTinkerIdValue()
+            /**
+             * 如果我们有多个dex,编译补丁时可能会由于类的移动导致变更增多。若打开keepDexApply模式，补丁包将根据基准包的类分布来编译。
+             */
             keepDexApply = false
+            /**
+             * 是否使用加固模式，仅仅将变更的类合成补丁。注意，这种模式仅仅可以用于加固应用中。
+             */
+            isProtectedApp = false
         }
 
         dex {
@@ -74,17 +83,27 @@ if (buildWithTinker()) {
         }
 
         res {
-
+            /**
+             * 需要处理res路径，支持*、?通配符，必须使用'/'分割。与dex.pattern一致, 路径是相对安装包的，例如assets/...，
+             * 务必注意的是，只有满足pattern的资源才会放到合成后的资源包。
+             */
             pattern = ["res/*", "assets/*", "resources.arcs", "AndoridManifest.xml"]
-            //指定tinker可以修改的资源路径
-
+            /**
+             * 指定tinker可以修改的资源路径
+             * 支持*、?通配符，必须使用'/'分割。若满足ignoreChange的pattern，在编译时会忽略该文件的新增、删除与修改。
+             */
             ignoreChange = ["assets/sample_meta.txt"] //指定不受影响的资源路径
 
             largeModSize = 100 //资源修改大小默认值
         }
-
+        /**
+        * 用于生成补丁包中的'package_meta.txt'文件
+        */
         packageConfig {
-
+            /**
+             * configField("key", "value"), 默认我们自动从基准安装包与新安装包的Manifest中读取tinkerId,并自动写入configField。
+             * 在这里，你可以定义其他的信息，在运行时可以通过TinkerLoadResult.getPackageConfigByName得到相应的数值。但是建议直接通过修改代码来实现，例如BuildConfig
+             */
             configField("patchMessage", "fix the 1.0 version's bugs")
 
             configField("patchVersion", "1.0")
