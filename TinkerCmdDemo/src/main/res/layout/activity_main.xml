@@ -8,9 +8,10 @@
     android:gravity="center_horizontal">
 
     <TextView
+        android:id="@+id/mTv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Tinker_Demo已修复"
+        android:text="Tinker_Demo"
         android:textSize="26sp"/>
 
     <Button

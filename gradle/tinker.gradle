@@ -1,11 +1,17 @@
 def bakPath = file("${buildDir}/bakApk/") //指定基准文件存放位置
 ext {
     tinkerEnable = true
-    tinkerOldApkPath = "${bakPath}/app-0511-12-36-20"
+    tinkerOldApkPath = "${bakPath}/TinkerCmdDemo-release-1030-15-55-16.apk"
     tinkerID = "1.0"
-    tinkerApplyMappingPath = "${bakPath}/app-0511-12-36-20"
-    tinkerApplyResourcePath = "${bakPath}/app-0511-12-36-20"
-    tinkerBuildFlavorDirectory = "${bakPath}/app-0511-12-36-20"
+    tinkerApplyMappingPath = "${bakPath}/TinkerCmdDemo-release-1030-15-55-16-mapping.txt"
+    tinkerApplyResourcePath = "${bakPath}/TinkerCmdDemo-release-1030-15-55-16-R.txt"
+    patchMessage = "fix the 1.0 version's bugs"
+    patchVersion = "1.0"
+    isProtectedApp = false
+}
+
+def releaseTime() {
+    return new Date().format("yyyy-MMdd-HH-mm-ss")
 }
 
 def buildWithTinker() {
@@ -33,6 +39,18 @@ def getTinkerIdValue() {
 def getTinkerBuildFlavorDirectory() {
 
     return ext.tinkerBuildFlavorDirectory
+}
+
+def String getTinkerPatchMessage() {
+    return ext.patchMessage
+}
+
+def String getTinkerPatchVersion() {
+    return ext.patchVersion
+}
+
+def boolean isProtectedApp() {
+    return ext.isProtectedApp
 }
 
 if (buildWithTinker()) {
@@ -67,18 +85,25 @@ if (buildWithTinker()) {
             /**
              * 是否使用加固模式，仅仅将变更的类合成补丁。注意，这种模式仅仅可以用于加固应用中。
              */
-            isProtectedApp = false
+            isProtectedApp = isProtectedApp()
         }
 
         dex {
-
             dexMode = "jar" //jar、raw
             pattern = ["classes*.dex", "assets/secondary-dex-?.jar"] //指定dex文件目录
-            loader = ["com.imooc.tinker.MyTinkerApplication"] //指定加载patch文件时用到的类
+            /**
+             *  这一项非常重要，它定义了哪些类在加载补丁包的时候会用到。这些类是通过Tinker无法修改的类，也是一定要放在main dex的类。
+                这里需要定义的类有：
+                1. 你自己定义的Application类；
+                2. Tinker库中用于加载补丁包的部分类，即com.tencent.tinker.loader.*；
+                3. 如果你自定义了TinkerLoader，需要将它以及它引用的所有类也加入loader中；
+                4. 其他一些你不希望被更改的类，例如Sample中的BaseBuildInfo类。这里需要注意的是，这些类的直接引用类也需要加入到loader中。或者你需要将这个类变成非preverify。
+                5. 使用1.7.6版本之后版本，参数1、2会自动填写。
+             */
+//            loader = ["com.imooc.tinker.MyApplication"] //指定加载patch文件时用到的类
         }
 
         lib {
-
             pattern = ["libs/*/*.so"]
         }
 
@@ -92,21 +117,21 @@ if (buildWithTinker()) {
              * 指定tinker可以修改的资源路径
              * 支持*、?通配符，必须使用'/'分割。若满足ignoreChange的pattern，在编译时会忽略该文件的新增、删除与修改。
              */
-            ignoreChange = ["assets/sample_meta.txt"] //指定不受影响的资源路径
+//            ignoreChange = ["assets/sample_meta.txt"] //指定不受影响的资源路径
 
             largeModSize = 100 //资源修改大小默认值
         }
         /**
-        * 用于生成补丁包中的'package_meta.txt'文件
-        */
+         * 用于生成补丁包中的'package_meta.txt'文件
+         */
         packageConfig {
             /**
              * configField("key", "value"), 默认我们自动从基准安装包与新安装包的Manifest中读取tinkerId,并自动写入configField。
              * 在这里，你可以定义其他的信息，在运行时可以通过TinkerLoadResult.getPackageConfigByName得到相应的数值。但是建议直接通过修改代码来实现，例如BuildConfig
              */
-            configField("patchMessage", "fix the 1.0 version's bugs")
+            configField("patchMessage", getTinkerPatchMessage())
 
-            configField("patchVersion", "1.0")
+            configField("patchVersion", getTinkerPatchVersion())
         }
     }
 
@@ -115,15 +140,16 @@ if (buildWithTinker()) {
         flavors.add(flavor.name)
     }
     boolean hasFlavors = flavors.size() > 0
+    def date = new Date().format("MMdd-HH-mm-ss")
+
     /**
-     * 复制基准包和其它必须文件到指定目录
+     * bak apk and mapping
      */
     android.applicationVariants.all { variant ->
         /**
          * task type, you want to bak
          */
         def taskName = variant.name
-        def date = new Date().format("MMdd-HH-mm-ss")
 
         tasks.all {
             if ("assemble${taskName.capitalize()}".equalsIgnoreCase(it.name)) {
@@ -156,9 +182,8 @@ if (buildWithTinker()) {
             }
         }
     }
-
-
     project.afterEvaluate {
+        //sample use for build all flavor for one time
         if (hasFlavors) {
             task(tinkerPatchAllFlavorRelease) {
                 group = 'tinker'
@@ -172,7 +197,9 @@ if (buildWithTinker()) {
                         project.tinkerPatch.oldApk = "${originOldPath}/${flavorName}/${project.name}-${flavorName}-release.apk"
                         project.tinkerPatch.buildConfig.applyMapping = "${originOldPath}/${flavorName}/${project.name}-${flavorName}-release-mapping.txt"
                         project.tinkerPatch.buildConfig.applyResourceMapping = "${originOldPath}/${flavorName}/${project.name}-${flavorName}-release-R.txt"
+
                     }
+
                 }
             }
 
@@ -195,9 +222,10 @@ if (buildWithTinker()) {
         }
     }
 }
+
 dependencies {
     //生成appilcation时使用
-    provided('com.tencent.tinker:tinker-android-anno:1.7.7')
+    provided('com.tencent.tinker:tinker-android-anno:1.8.1')
     //tinker的核心sdk库
-    compile('com.tencent.tinker:tinker-android-lib:1.7.7')
+    compile('com.tencent.tinker:tinker-android-lib:1.8.1')
 }
