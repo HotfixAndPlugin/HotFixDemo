@@ -9,4 +9,4 @@
 .externalNativeBuild
 /Tools/Tinker/outputs
 /Tools/Tinker/apk
-/Tools/Tinker/keystore
+/Tools/Tinker/keystore/andfix.jks
