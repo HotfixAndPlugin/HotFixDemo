@@ -2,6 +2,13 @@ package com.lewish.start.tinkerdemo.tinker;
 
 import android.content.Context;
 
+import com.tencent.tinker.lib.listener.DefaultPatchListener;
+import com.tencent.tinker.lib.patch.AbstractPatch;
+import com.tencent.tinker.lib.patch.UpgradePatch;
+import com.tencent.tinker.lib.reporter.DefaultLoadReporter;
+import com.tencent.tinker.lib.reporter.DefaultPatchReporter;
+import com.tencent.tinker.lib.reporter.LoadReporter;
+import com.tencent.tinker.lib.reporter.PatchReporter;
 import com.tencent.tinker.lib.tinker.Tinker;
 import com.tencent.tinker.lib.tinker.TinkerInstaller;
 import com.tencent.tinker.loader.app.ApplicationLike;
@@ -24,7 +31,17 @@ public class TinkerManager {
         if (mIsInstalled) {
             return;
         }
-        TinkerInstaller.install(mApplicationLike);
+        LoadReporter loadReporter = new DefaultLoadReporter(getApplicationContext());
+        PatchReporter patchReporter = new DefaultPatchReporter(getApplicationContext());
+        DefaultPatchListener defaultPatchListener = new DefaultPatchListener(getApplicationContext());
+        AbstractPatch upgradePatchProcessor = new UpgradePatch();
+
+        TinkerInstaller.install(applicationLike,
+                loadReporter,
+                patchReporter,
+                defaultPatchListener,
+                CustomResultService.class,
+                upgradePatchProcessor); //完成Tinker初始化
         mIsInstalled = true;
     }
 

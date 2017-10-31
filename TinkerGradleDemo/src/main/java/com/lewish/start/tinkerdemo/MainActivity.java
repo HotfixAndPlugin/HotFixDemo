@@ -50,7 +50,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
         mTv = (TextView)findViewById(R.id.mTv);
-        mTv.setText("再改下试试");
+        mTv.setText("修改啦！！！");
     }
 
     private String getPatchName() {
