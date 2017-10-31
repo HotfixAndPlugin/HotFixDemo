@@ -1,10 +1,10 @@
 def bakPath = file("${buildDir}/bakApk/") //指定基准文件存放位置
 ext {
     tinkerEnable = true
-    tinkerOldApkPath = "${bakPath}/TinkerGradleDemo-release-1031-145829.apk"
+    tinkerOldApkPath = "${bakPath}/TinkerGradleDemo-release-1031-212029.apk"
     tinkerID = "1.0"
-    tinkerApplyMappingPath = "${bakPath}/TinkerGradleDemo-release-1031-145829-mapping.txt"
-    tinkerApplyResourcePath = "${bakPath}/TinkerGradleDemo-release-1031-145829-R.txt"
+    tinkerApplyMappingPath = "${bakPath}/TinkerGradleDemo-release-1031-212029-mapping.txt"
+    tinkerApplyResourcePath = "${bakPath}/TinkerGradleDemo-release-1031-212029-R.txt"
     patchMessage = "fix the 1.0 version's bugs"
     patchVersion = "1.0"
     isProtectedApp = true
@@ -60,7 +60,7 @@ if (buildWithTinker()) {
     //所有tinker相关的参数配置
     tinkerPatch {
 
-        tinkerEnable = buildWithTinker() //指定是否启用tinker
+        tinkerEnable = true //指定是否启用tinker
 
         oldApk = getOldApkPath() //指定old apk文件径
 
@@ -112,7 +112,7 @@ if (buildWithTinker()) {
              * 需要处理res路径，支持*、?通配符，必须使用'/'分割。与dex.pattern一致, 路径是相对安装包的，例如assets/...，
              * 务必注意的是，只有满足pattern的资源才会放到合成后的资源包。
              */
-            pattern = ["res/*", "assets/*", "resources.arcs", "AndoridManifest.xml"]
+            pattern = ["res/*", "r/*", "assets/*", "resources.arsc", "AndroidManifest.xml"]
             /**
              * 指定tinker可以修改的资源路径
              * 支持*、?通配符，必须使用'/'分割。若满足ignoreChange的pattern，在编译时会忽略该文件的新增、删除与修改。
