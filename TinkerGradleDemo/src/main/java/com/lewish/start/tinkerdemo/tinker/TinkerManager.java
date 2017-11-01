@@ -1,7 +1,5 @@
 package com.lewish.start.tinkerdemo.tinker;
 
-import android.content.Context;
-
 import com.tencent.tinker.lib.listener.DefaultPatchListener;
 import com.tencent.tinker.lib.patch.AbstractPatch;
 import com.tencent.tinker.lib.patch.UpgradePatch;
@@ -19,30 +17,27 @@ import com.tencent.tinker.loader.app.ApplicationLike;
  */
 public class TinkerManager {
     private static boolean mIsInstalled = false;
-    private static ApplicationLike mApplicationLike;
+    private static ApplicationLike mAppLike;
 
     /**
      * 完成Tinker初始化
-     *
-     * @param applicationLike
      */
     public static void installTinker(ApplicationLike applicationLike) {
-        mApplicationLike = applicationLike;
+        mAppLike = applicationLike;
         if (mIsInstalled) {
             return;
         }
-        LoadReporter loadReporter = new DefaultLoadReporter(getApplicationContext());
-        PatchReporter patchReporter = new DefaultPatchReporter(getApplicationContext());
-        DefaultPatchListener defaultPatchListener = new DefaultPatchListener(getApplicationContext());
+        LoadReporter loadReporter = new DefaultLoadReporter(mAppLike.getApplication());
+        PatchReporter patchReporter = new DefaultPatchReporter(mAppLike.getApplication());
+        DefaultPatchListener patchListener = new DefaultPatchListener(mAppLike.getApplication());
         AbstractPatch upgradePatchProcessor = new UpgradePatch();
 
-        TinkerInstaller.install(applicationLike);
-//        TinkerInstaller.install(applicationLike,
-//                loadReporter,
-//                patchReporter,
-//                defaultPatchListener,
-//                CustomResultService.class,
-//                upgradePatchProcessor); //完成Tinker初始化
+        TinkerInstaller.install(applicationLike,
+                loadReporter,
+                patchReporter,
+                patchListener,
+                CustomResultService.class,
+                upgradePatchProcessor);
         mIsInstalled = true;
     }
 
@@ -53,14 +48,7 @@ public class TinkerManager {
      */
     public static void loadPatch(String path) {
         if (Tinker.isTinkerInstalled()) {
-            TinkerInstaller.onReceiveUpgradePatch(getApplicationContext(), path);
+            TinkerInstaller.onReceiveUpgradePatch(mAppLike.getApplication(), path);
         }
-    }
-
-    private static Context getApplicationContext() {
-        if (mApplicationLike != null) {
-            return mApplicationLike.getApplication().getApplicationContext();
-        }
-        return null;
     }
 }
