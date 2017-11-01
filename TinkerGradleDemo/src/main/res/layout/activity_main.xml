@@ -32,5 +32,5 @@
         android:id="@+id/mImg"
         android:layout_width="200dp"
         android:layout_height="200dp"
-        android:src="@drawable/icon_big_boy_prop1"/>
+        android:src="@drawable/icon_big_boy_prop2"/>
 </LinearLayout>

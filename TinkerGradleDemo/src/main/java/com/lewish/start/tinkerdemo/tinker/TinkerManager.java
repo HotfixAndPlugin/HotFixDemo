@@ -36,12 +36,13 @@ public class TinkerManager {
         DefaultPatchListener defaultPatchListener = new DefaultPatchListener(getApplicationContext());
         AbstractPatch upgradePatchProcessor = new UpgradePatch();
 
-        TinkerInstaller.install(applicationLike,
-                loadReporter,
-                patchReporter,
-                defaultPatchListener,
-                CustomResultService.class,
-                upgradePatchProcessor); //完成Tinker初始化
+        TinkerInstaller.install(applicationLike);
+//        TinkerInstaller.install(applicationLike,
+//                loadReporter,
+//                patchReporter,
+//                defaultPatchListener,
+//                CustomResultService.class,
+//                upgradePatchProcessor); //完成Tinker初始化
         mIsInstalled = true;
     }
 

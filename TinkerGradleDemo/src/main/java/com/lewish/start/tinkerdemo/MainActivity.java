@@ -50,7 +50,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
         mTv = (TextView)findViewById(R.id.mTv);
-        mTv.setText("图片二333");
+        mTv.setText("图片二");
     }
 
     private String getPatchName() {
