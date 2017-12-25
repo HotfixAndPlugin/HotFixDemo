@@ -154,7 +154,7 @@ if (buildWithTinker()) {
                         def newFileNamePrefix = "${fileNamePrefix}-${date}"
 
                         def destPath = bakPath
-                        from variant.outputs.outputFile
+                        from variant.outputs[0].outputFile
                         into destPath
                         rename { String fileName ->
                             fileName.replace("${fileNamePrefix}.apk", "${newFileNamePrefix}.apk")
@@ -180,7 +180,7 @@ if (buildWithTinker()) {
 
 dependencies {
     //生成appilcation时使用
-    provided('com.tencent.tinker:tinker-android-anno:1.8.1')
-    //tinker的核心sdk库
-    compile('com.tencent.tinker:tinker-android-lib:1.8.1')
+    implementation("com.tencent.tinker:tinker-android-lib:1.9.0") { changing = true }
+    annotationProcessor("com.tencent.tinker:tinker-android-anno:1.9.0") { changing = true }
+    compileOnly("com.tencent.tinker:tinker-android-anno:1.9.0") { changing = true }
 }
