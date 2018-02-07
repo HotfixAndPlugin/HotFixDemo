@@ -26,7 +26,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        mPatchDir = getExternalCacheDir().getAbsolutePath() + "/tpatch/";
+        mPatchDir = getExternalCacheDir().getAbsolutePath()+"/tinkerPatch/";
         File file = new File(mPatchDir);
         if (!file.exists()) {
             file.mkdir();
@@ -50,10 +50,10 @@ public class MainActivity extends AppCompatActivity {
             }
         });
         mTv = (TextView)findViewById(R.id.mTv);
-        mTv.setText("图片二");
+        mTv.setText("无Bug");
     }
 
     private String getPatchName() {
-        return mPatchDir.concat("tinkerPatch").concat(FILE_END);
+        return mPatchDir.concat("patch_signed").concat(FILE_END);
     }
 }
